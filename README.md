@@ -2,7 +2,7 @@
 
 ## Install 
 ```
-Plug ebuckthal/prettier.vim
+Plug 'ebuckthal/prettier.vim'
 ```
 
 ## Usage
