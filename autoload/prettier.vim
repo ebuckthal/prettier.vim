@@ -1,3 +1,7 @@
+if !exists('g:prettier_cmd')
+  let g:prettier_cmd = 'prettier --single-quote --trailing-comma all --stdin'
+endif
+
 function! prettier#execute(bang, user_input, start_line, end_line) abort
     let search = @/
     let view = winsaveview()
@@ -34,9 +38,7 @@ function! s:prettier(bang, user_input, start_line, end_line) abort
     let stdin = getbufline(bufnr('%'), a:start_line, a:end_line)
     let original_buffer = getbufline(bufnr('%'), 1, '$')
 
-    let cmd = 'prettier --single-quote --trailing-comma all --stdin'
-
-    let stdout = split(system(cmd, l:stdin), '\n')
+    let stdout = split(system(get(g:, 'prettier_cmd'), l:stdin), '\n')
 
     call s:quickfixclear()
 
