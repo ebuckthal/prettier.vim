@@ -1,5 +1,5 @@
 <p align="center">
-  <h2 align="center"><pre>prettier.vim</pre></h2>
+  <h2 align="center"><span><pre>prettier.vim</pre><span></h2>
   <p align="center">Format your messy javascript code automatically with vim💯</p>
 </p>
 
