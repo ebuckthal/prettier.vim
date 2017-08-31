@@ -4,7 +4,7 @@
 </p>
 
 ### Get `prettier.vim`
-You'll need to install [prettier](https://github.com/prettier/pretter) if you haven't already. For example, I used npm:
+You'll need to install [prettier](https://github.com/prettier/prettier) if you haven't already. For example, I used npm:
 ```
 npm install -g prettier
 ```
