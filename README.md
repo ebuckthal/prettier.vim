@@ -38,3 +38,5 @@ By default, `prettier` is run with as `prettier --single-quote all --trailing-co
 let g:prettier_cmd = 'prettier --single-quote all --stdin'
 ```
 
+### Contributing
+Development of `prettier.vim` is facilitated exclusively on GitHub. Any contributions in the form of Pull Requests are very welcome and highly encouraged. If you find an issue or have a question with this plugin, open an Issue.
