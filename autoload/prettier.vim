@@ -1,7 +1,3 @@
-if !exists('g:prettier_cmd')
-  let g:prettier_cmd = 'prettier --single-quote --trailing-comma all --stdin'
-endif
-
 function! prettier#execute(bang, user_input, start_line, end_line) abort
     let search = @/
     let view = winsaveview()
@@ -38,7 +34,8 @@ function! s:prettier(bang, user_input, start_line, end_line) abort
     let stdin = getbufline(bufnr('%'), a:start_line, a:end_line)
     let original_buffer = getbufline(bufnr('%'), 1, '$')
 
-    let stdout = split(system(get(g:, 'prettier_cmd'), l:stdin), '\n')
+    let stdout = system(&formatprg, l:stdin)
+    let stdout_lines = split(stdout, '\n')
 
     call s:quickfixclear()
 
@@ -47,7 +44,7 @@ function! s:prettier(bang, user_input, start_line, end_line) abort
         let lines_after = getbufline(bufnr('%'), a:end_line + 1, '$')
         let lines_before = getbufline(bufnr('%'), 1, a:start_line - 1)
 
-        let new_buffer = lines_before + stdout + lines_after
+        let new_buffer = lines_before + stdout_lines + lines_after
         if new_buffer !=# original_buffer
 
             call s:deletelines(len(new_buffer), line('$'))
@@ -55,7 +52,7 @@ function! s:prettier(bang, user_input, start_line, end_line) abort
             call setline(1, new_buffer)
         endif
     else
-      call s:quickfixerrors(stdout)
+      call s:quickfixerrors(stdout_lines)
     endif
 endfunction
 
@@ -65,7 +62,7 @@ function! s:quickfixerrors(out) abort
   for line in a:out
     " matches:
     " stdin: SyntaxError: Unexpected token (2:8)
-    let l:match = matchlist(line, '^stdin: \(.*\) (\(\d\{1,}\):\(\d\{1,}\)*)')
+    let l:match = matchlist(line, 'stdin: \(.*\) (\(\d\{1,}\):\(\d\{1,}\)*)')
     if !empty(l:match)
       call add(l:errors, { 'bufnr': bufnr('%'),
                          \ 'text': match[1],
