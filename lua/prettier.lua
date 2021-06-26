@@ -10,6 +10,22 @@ formatprg = {
   ['typescript.tsx'] = 'prettier --no-color --parser typescript'
 }
 
+-- https://github.com/norcalli/nvim_utils/blob/71919c2f05920ed2f9718b4c2e30f8dd5f167194/lua/nvim_utils.lua#L554-L567
+local function nvim_create_augroups(definitions)
+	for group_name, definition in pairs(definitions) do
+		vim.api.nvim_command('augroup '..group_name)
+		vim.api.nvim_command('autocmd!')
+		for _, def in ipairs(definition) do
+			-- if type(def) == 'table' and type(def[#def]) == 'function' then
+			-- 	def[#def] = lua_callback(def[#def])
+			-- end
+			local command = table.concat(vim.tbl_flatten{'autocmd', def}, ' ')
+			vim.api.nvim_command(command)
+		end
+		vim.api.nvim_command('augroup END')
+	end
+end
+
 -- https://github.com/nanotee/nvim-lua-guide#vimapinvim_replace_termcodes
 local function t(str)
     -- Adjust boolean arguments as needed
@@ -30,8 +46,25 @@ function string:split(delimiter)
   return result
 end
 
+M.init = function ()
+  local autocmds = {
+    prettier = {
+      {"BufWritePre", "*.js,*.jsx,*.ts,*tsx,*.json,*.gql,*.md,*.html", [[lua require('prettier').prettier()]]};
+    };
+  }
+
+  nvim_create_augroups(autocmds)
+end
+
 
 M.prettier = function ()
+
+  if 0 == vim.fn.executable('prettier') then
+    print('prettier failed! No executable detected')
+    return
+  end
+
+
   local view = vim.fn.winsaveview();
   local stdin = vim.fn.getbufline(vim.fn.bufnr("%"), 1, "$")
 
